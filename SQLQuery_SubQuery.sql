@@ -53,3 +53,45 @@ group by grade
 
 -- From the following tables, write a SQL query to find those salespeople who earned the maximum commission. 
 -- Return ord_no, purch_amt, ord_date, and salesman_id.
+select ord_no, purch_amt, ord_date, salesman_id
+from orders
+where salesman_id in (
+    select salesman_id
+    from salesman 
+    where commission=(
+        select max(commission)
+        from salesman
+    )
+)
+
+
+-- From the following tables write a SQL query to find salespeople who had more than one customer. Return salesman_id and name.
+select salesman_id, name
+from salesman
+where salesman_id in (
+    select salesman_id
+    from customer
+    group by salesman_id
+    having count(salesman_id)>1
+)
+
+
+-- From the following tables write a SQL query to find those orders, which are higher than the average amount of the orders. 
+-- Return ord_no, purch_amt, ord_date, customer_id and salesman_id.
+select * from orders
+select ord_no, purch_amt, ord_date, customer_id, salesman_id
+from orders 
+where purch_amt > (
+    select avg(purch_amt)
+    from orders 
+)
+
+
+-- Write a query to extract all data from the customer table if and only if one or more of the customers 
+-- in the customer table are located in London.
+select * from customer c1
+where exists (
+    select * 
+    from customer c2
+    where city='London'
+)
